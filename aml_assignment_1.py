@@ -161,7 +161,11 @@ from mlxtend.plotting import plot_decision_regions
 #2 = medium
 #3 = verylow
 
-plot_decision_regions(svm_test_x, svm_test_y, classifier)
+plot_decision_regions(svm_test_x, svm_y_predict, classifier)
+plt.xlabel('LPR')
+plt.ylabel('PEG')
+plt.title('SVM')
+plt.show()
 
 """### Perceptron"""
 
@@ -189,8 +193,11 @@ axp.set_title('Confusion Matrix Perceptron');
 print('Accuracy of model: {:.2f}%'.format(getAccuracy(p, svm_test_x, svm_test_y)))
 
 from mlxtend.plotting import plot_decision_regions
-plot_decision_regions(svm_test_x, svm_test_y, p)
-
+plot_decision_regions(svm_test_x, per_y_predict, p)
+plt.xlabel('LPR')
+plt.ylabel('PEG')
+plt.title('Perceptron')
+plt.show()
 #0 = high
 #1 = low
 #2 = medium
@@ -243,6 +250,10 @@ yb1_pred = clf_1.predict_proba(svm_test_x)[:,1].reshape(-1,1)
 
 #Decision Boundary
 plot_decision_regions(svm_test_x, yb1, clf_1)
+plt.xlabel('LPR')
+plt.ylabel('PEG')
+plt.title('Class = High')
+plt.show()
 
 """## class = low binary classifier"""
 
@@ -257,6 +268,10 @@ yb2_pred = clf_2.predict_proba(svm_test_x)[:,1].reshape(-1,1)
 
 #Decision Boundary
 plot_decision_regions(svm_test_x, yb2, clf_2)
+plt.xlabel('LPR')
+plt.ylabel('PEG')
+plt.title('Class = Low')
+plt.show()
 
 """## class = medium binary classifier"""
 
@@ -271,6 +286,10 @@ yb3_pred = clf_3.predict_proba(svm_test_x)[:,1].reshape(-1,1)
 
 #Decision Boundary
 plot_decision_regions(svm_test_x, yb3, clf_3)
+plt.xlabel('LPR')
+plt.ylabel('PEG')
+plt.title('Class = Medium')
+plt.show()
 
 """## class = verylow binary classifier"""
 
@@ -285,6 +304,10 @@ yb4_pred = clf_4.predict_proba(svm_test_x)[:,1].reshape(-1,1)
 
 #Decision Boundary
 plot_decision_regions(svm_test_x, yb4, clf_4)
+plt.xlabel('LPR')
+plt.ylabel('PEG')
+plt.title('Class = VeryLow')
+plt.show()
 
 """# Question 2(b):"""
 
@@ -312,6 +335,10 @@ axis = plot_decision_regions(svm_test_x, m, clf_1, legend=1)
 plot_decision_regions(svm_test_x, m, clf_2, ax = axis, legend=0)
 plot_decision_regions(svm_test_x, m, clf_3, ax = axis, legend=0)
 plot_decision_regions(svm_test_x, m, clf_4, ax = axis, legend=0)
+plt.xlabel('LPR')
+plt.ylabel('PEG')
+plt.title('Aggregation')
+plt.show()
 
 """# Question 3(a):"""
 
@@ -369,6 +396,22 @@ knn_data_new.info()
 
 """# Question 3(c):"""
 
+# Commented out IPython magic to ensure Python compatibility.
+import itertools
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.ticker import NullFormatter
+import pandas as pd
+import numpy as np
+import matplotlib.ticker as ticker
+from sklearn import preprocessing
+from sklearn import datasets, neighbors
+from sklearn.model_selection import train_test_split
+from mlxtend.plotting import plot_decision_regions
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import metrics
+# %matplotlib inline
+
 knn_data_new = pd.read_csv("/content/Car_Evaluation_data.csv")
 knn_data_new.info()
 
@@ -425,13 +468,14 @@ yhat_test=neigh.predict(X_test)
 mean_acc_test[9] = metrics.accuracy_score(y_test, yhat_test)
 std_acc_test[9]=np.std(yhat_test==y_test)/np.sqrt(yhat_test.shape[0])
 
-plt.plot(range(0,10),mean_acc_test,'g')
-plt.plot(range(0,10),mean_acc_valid,'r')
-# plt.fill_between(range(0,10),mean_acc_test - 1 * std_acc_test,mean_acc_test + 1 * std_acc_test, alpha=0.10)
-# plt.fill_between(range(0,10),mean_acc_valid - 1 * std_acc_valid,mean_acc_valid + 1 * std_acc_valid, alpha=0.10)
-plt.legend(('Test', 'Valid'))
+plt.plot(range(0,10),mean_acc_test,'b', label = 'Test')
+plt.plot(range(0,10),mean_acc_valid,'r', label = 'Valid')
+plt.fill_between(range(0,10),mean_acc_test - 1 * std_acc_test,mean_acc_test + 1 * std_acc_test, alpha=0.10)
+plt.fill_between(range(0,10),mean_acc_valid - 1 * std_acc_valid,mean_acc_valid + 1 * std_acc_valid, alpha=0.10)
+plt.legend()
 plt.ylabel('Accuracy ')
-plt.xlabel('Number of Samples in Percentage')
+plt.xlabel('Number of Samples in Percentage (%)')
+plt.title("Varying Portion of Sampling Data")
 plt.show()
 
 """# Question 3(d):"""
@@ -451,32 +495,6 @@ from mlxtend.plotting import plot_decision_regions
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import metrics
 # %matplotlib inline
-
-knn_data_new = pd.read_csv("/content/Car_Evaluation_data.csv")
-knn_data_new.info()
-
-feature_df_new = knn_data_new[['buying price', 'maintenance cost','number of doors', 'number of persons','lug_boot', 'safety']]
-
-knn_x_new = np.array(feature_df_new)
-knn_y_new = np.array(knn_data_new['class'])
-
-# We want to split the data in 57.87:17.36:24.77 for train:valid:test dataset
-train_size=0.5788
-
-X_new = knn_data_new.drop(columns = ['class']).copy()
-y_new = knn_data_new['class']
-
-# In the first step we will split the data in training and remaining dataset
-X_train, X_rem, y_train, y_rem = train_test_split(X_new,y_new, train_size=0.5788)
-
-# Now since we want the valid and test size to be 17.36:24.77. 
-# we have to define valid_size=0.4121 (that is 41.21% of remaining data)
-test_size = 0.5879
-X_valid, X_test, y_valid, y_test = train_test_split(X_rem,y_rem, test_size=0.5879)
-
-print(X_train.shape), print(y_train.shape)
-print(X_valid.shape), print(y_valid.shape)
-print(X_test.shape), print(y_test.shape)
 
 Ks = 10
 mean_acc = np.zeros((Ks-1))
@@ -499,6 +517,7 @@ plt.fill_between(range(1,Ks),mean_acc - 1 * std_acc,mean_acc + 1 * std_acc, alph
 plt.legend(('Accuracy ', '+/- 3xstd'))
 plt.ylabel('Accuracy ')
 plt.xlabel('Number of Neignbours (K)')
+plt.title("Varying K values")
 plt.tight_layout()
 plt.show()
 
